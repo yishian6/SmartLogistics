@@ -1,10 +1,31 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入内容" v-model="input" width="200px">
-      </el-input>
-      <el-button type="primary" @click="onSubmit">搜索</el-button>
+      <!-- 搜索条件 -->
+      <el-row :gutter="20" class="queryInfo">
+        <el-col :xs="8" :sm="6" :md="6" :lg="5" :xl="5">
+          <el-input class="queryInfo-li-one" v-model="queryInfo.name" clearable="true" size="large"
+            placeholder="请输入岗位名称"></el-input>
+        </el-col>
+        <el-select v-model="queryInfo.company_type" placeholder="公司分类选择" clearable="true" size="large">
+          <el-option v-for="item in company_type" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="queryInfo.location" placeholder="地理位置选择" clearable="true" size="large">
+          <el-option v-for="item in location" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
 
+        <el-select v-model="queryInfo.main_business" placeholder="主要业务选择" clearable="true" size="large">
+          <el-option v-for="item in main_business" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
+          <el-button type="primary" :plain="true" class="goodsindex-queryInfo-li-two"
+            @click="getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, pageSize, pageNum)"
+            size="large">搜索</el-button>
+        </el-col>
+      </el-row>
     </div>
     <div class="job_two">
       <div v-for="item in jobList" :key="item.id" class="offers">
@@ -16,17 +37,18 @@
           </div>
           <div class="second">
             <span class="salary">{{ item.salary }}</span>
-            <span class="job_description">{{ item.recruit_conditions }}</span>
+            <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
             <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
           </div>
           <div class="second">
-            <span class="treatment">{{ item.benefits }}</span>
+            <span class="benefits">{{ item.benefits }}</span>
             <span class="main_business">{{ item.main_business }}</span>
           </div>
         </a>
       </div>
       <div class="block_two">
-        <el-pagination layout=" pager" @current-change="currentChange" :total="50">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
+          :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="jobNum">
         </el-pagination>
       </div>
       <div style="width:600px;height:100px;"></div>
@@ -167,21 +189,209 @@ export default {
 </script> -->
 
 <script setup>
-import { getJobListAPI } from '@/apis/job'
-import { reactive, onMounted } from 'vue'
+import { getJobListAPI, getJobExploreAPI } from '@/apis/job'
+import { reactive, ref, onMounted } from 'vue'
 
+// isExplore
+const isExplore = ref(false)
+
+// 岗位数量
+const jobNum = ref(0)
+// pageSize表示页面新闻数
+const pageSize = ref(5)
+const pageNum = ref(1)
+
+// 搜索条件
+const queryInfo = reactive({
+  name: '',
+  company_type: '',
+  location: '',
+  main_business: ''
+})
+
+// 高级搜索的选项
+const company_type = reactive([
+  {
+    value: '民营',
+    label: '民营'
+  },
+  {
+    value: '合资',
+    label: '合资'
+  },
+  {
+    value: '外资（非欧美)',
+    label: '外资（非欧美)'
+  },
+  {
+    value: '外资（欧美）',
+    label: '外资（欧美）'
+  },
+  {
+    value: '国企',
+    label: '国企'
+  },
+  {
+    value: '已上市',
+    label: '已上市'
+  },
+  {
+    value: '创业公司',
+    label: '创业公司'
+  },
+  {
+    value: '外企代表处',
+    label: '外企代表处'
+  },
+])
+const location = reactive([
+  {
+    value: '南京·江宁区',
+    label: '南京·江宁区'
+  },
+  {
+    value: '南京',
+    label: '南京'
+  },
+  {
+    value: '南京·秦淮区',
+    label: '南京·秦淮区'
+  },
+  {
+    value: '南京·栖霞区',
+    label: '南京·栖霞区'
+  },
+  {
+    value: '南京·鼓楼区',
+    label: '南京·鼓楼区'
+  },
+  {
+    value: '南京·雨花台区',
+    label: '南京·雨花台区'
+  },
+  {
+    value: '南京·江北新区',
+    label: '南京·江北新区'
+  },
+  {
+    value: '南京·建邺区',
+    label: '南京·建邺区'
+  },
+  {
+    value: '南京·浦口区',
+    label: '南京·浦口区'
+  },
+  {
+    value: '南京·六合区',
+    label: '南京·六合区'
+  },
+  {
+    value: '南京·溧水区',
+    label: '南京·溧水区'
+  },
+  {
+    value: '南京·玄武区',
+    label: '南京·玄武区'
+  }
+])
+const main_business = reactive([
+  {
+    value: '交通/运输/物流',
+    label: '交通/运输/物流'
+  },
+  {
+    value: '机械/设备/重工',
+    label: '机械/设备/重工'
+  },
+  {
+    value: '互联网/电子商务',
+    label: '互联网/电子商务'
+  },
+  {
+    value: '新能源',
+    label: '新能源'
+  },
+  {
+    value: '仪器仪表/工业自动化',
+    label: '仪器仪表/工业自动化'
+  },
+  {
+    value: '计算机软件',
+    label: '计算机软件'
+  },
+  {
+    value: '贸易/进出口',
+    label: '贸易/进出口'
+  },
+  {
+    value: '制药/生物工程',
+    label: '制药/生物工程'
+  },
+  {
+    value: '汽车',
+    label: '汽车'
+  },
+  {
+    value: '医疗设备/器械',
+    label: '医疗设备/器械'
+  },
+  {
+    value: '电子技术/半导体/集成电路',
+    label: '电子技术/半导体/集成电路'
+  },
+])
 // 用来存放岗位数据
 const jobList = reactive([])
-const getJobList = getJobListAPI(5, 1).then(res => jobList.splice(0, jobList.length, ...res.data.rows)).catch(error => console.log(error))
+// 岗位界面初始化
+const getJobList = (size = 5, num = 1) => {
+  getJobListAPI(size, num).then(res => {
+    jobList.splice(0, jobList.length, ...res.data.rows)
+    jobNum.value = res.data.total
+  }).catch(error => console.log(error))
+}
 
-onMounted(() => getJobList)
+// 进行新闻的高级查询
+const getJobExploreList = (name = '', type = '', location = '', mainBusiness = '', pageSize = 8, pageNum = 1) => {
+  getJobExploreAPI(name, type, location, mainBusiness, pageSize, pageNum).then(res => {
+    jobList.splice(0, jobList.length, ...res.data.rows)
+    jobNum.value = res.data.jobNum
+    isExplore.value = true
+  }).catch(error => console.log(error))
+}
 
+// 当页面号改变时调用下面的方法
+const handleCurrentChange = (page) => {
+  pageNum.value = page;
+  if (isExplore.value)
+    getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, pageSize.value, page)
+  else
+    getJobList(pageSize.value, page)
+
+}
+const handleSizeChange = (size) => {
+  pageSize.value = size;
+}
+onMounted(() => getJobList())
 </script>
 
 
-<style>
-.offers {
+<style scoped>
+.search {
+  /* margin-left: 220px; */
+  margin-top: 50px;
+}
 
+.queryInfo {
+  margin-left: 220px;
+}
+
+.queryInfo-li-one {
+  width: 100%;
+  height: auto;
+  margin-left: 45%
+}
+
+.offers {
   margin-bottom: 8px;
   position: relative;
   overflow: hidden;
@@ -222,7 +432,7 @@ onMounted(() => getJobList)
   margin-right: 16px;
 }
 
-.job_description {
+.recruit_conditions {
   max-width: 600px;
   font-size: 14px;
   color: #666;
@@ -235,7 +445,7 @@ onMounted(() => getJobList)
   float: right;
 }
 
-.treatment {
+.benefits {
   font-size: 12px;
   color: #999;
 }
@@ -258,6 +468,7 @@ onMounted(() => getJobList)
   margin-left: 50%;
   float: left;
   margin-bottom: 100px;
+  margin-top: 10px;
 }
 
 .el-input {
@@ -274,13 +485,6 @@ onMounted(() => getJobList)
   display: inline-block;
 }
 
-.search {
-  width: 41.25%;
-  height: 40px;
-  margin-left: 220px;
-  margin-top: 50px;
-}
-
 .charts {
   float: right;
   margin-right: 3.2%;
@@ -289,7 +493,7 @@ onMounted(() => getJobList)
 
 .job_two {
   margin-bottom: 100px;
-  margin-top: 40px;
+  margin-top: 15px;
   margin-left: 20px;
   width: 41.25%;
   height: 400px;

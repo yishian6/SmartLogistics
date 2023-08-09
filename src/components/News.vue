@@ -7,34 +7,49 @@
             <span @click="show('LastMile')" :class="index === 2 ? 'active' : ''" class="titletwo">最后一公里</span>
         </div>
         <div class="search_two">
-            <el-input placeholder="请输入内容" v-model="input" width="200px">
-            </el-input>
-            <el-button type="primary" @click="onSubmit">搜索</el-button>
-
+            <!-- 搜索条件 -->
+            <el-row :gutter="20" class="queryInfo">
+                <el-col :xs="9" :sm="7" :md="7" :lg="7" :xl="7">
+                    <el-input class="queryInfo-li-one" v-model="queryInfo.title" clearable placeholder="请输入新闻名称"></el-input>
+                </el-col>
+                <el-select v-model="queryInfo.source_org" placeholder="新闻来源选择" clearable>
+                    <el-option v-for="item in (newsType === 'LastMile' ? sourceOrgL : sourceOrgR)" :key="item.value"
+                        :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
+                    <el-button type="primary" :plain="true" class="queryInfo-li-two"
+                        @click="getNewsExploreList(newsType, queryInfo.title, queryInfo.source_org)">搜索</el-button>
+                </el-col>
+            </el-row>
         </div>
     </div>
     <div class="one">
         <div class="news">
-            <el-table :data="newsList" style="width: 1000px; margin: 0 auto;">
+            <el-table :data="newsList" style="width: 1000px; margin: 0 auto;cursor: pointer;">
                 <el-table-column prop="title" width="850">
                     <!-- <template #default="scope">
                         <a :href="scope.row.address" target="_blank">{{ scope.row.name }}</a>
                     </template> -->
-                    <div class="trigger-area" @mouseenter="showPopup" @mouseleave="hidePopup">
-                        {{ row.content }}
-                    </div>
+                    <!-- <div style="float: right; margin-top: 20px; height: 100px" class="popup" @mouseenter="showPopup()"
+                        @mouseleave="hidePopup()">
+                        <transition name="fade">
+                            <div v-if="isPopupVisible" class="popup-content">
+                                {{ item.context }}
+                            </div>
+                        </transition>
+                    </div> -->
                 </el-table-column>
+
 
                 <el-table-column prop="publish_date">
                 </el-table-column>
             </el-table>
         </div>
         <div class="bolck">
-            <!-- <el-pagination background layout="prev, pager, next" @current-change="currentChange" :total="total"
-                class="mt-4" /> -->
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
                 :page-sizes="[8, 16, 32, 50, 80]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="index === 1 ? ruralNum : lastMileNum">
+                :total="newsNum">
             </el-pagination>
         </div>
 
@@ -43,54 +58,182 @@
 
 
 <script setup>
-import { getNewInfoAPI } from '@/apis/news';
-import { reactive, onMounted, ref } from 'vue'
+import { getNewInfoAPI, getNewExploreAPI } from '@/apis/news';
+import { reactive, onMounted, ref, computed } from 'vue'
 
-// const newsReqInfo = reactive({
-//     // 控制切换按钮后按钮改变样式
-//     index: 1,
-//     // 控制点击按钮后子组件显示，再次点击隐藏
-//     isShow: true,
-//     currentPage: 1,
-//     currentPageTwo: 1,
-//     pagesize: 5,
-// })
-// 用来选择点击了
+// 用来选择点击了那种新闻
 let index = ref(1)
+// 用来标记当前是index接口还是explore接口
+const isExplore = ref(false)
+const newsType = computed(() => index.value === 2 ? 'LastMile' : 'logistics')
 //新闻总数
-const lastMileNum = ref(0)
-const ruralNum = ref(0)
+const newsNum = ref(0)
 // pageSize表示页面新闻数
 const pageSize = ref(8)
 const pageNum = ref(1)
 
+// 搜索条件
+const queryInfo = reactive({
+    title: '',
+    source_org: ''
+})
+// 高级搜索的选项
+// 这是最后一公里的
+const sourceOrgL = reactive([
+    {
+        value: '央视网',
+        label: '央视网'
+    },
+    {
+        value: '人民日报',
+        label: '人民日报'
+    },
+    {
+        value: '新华网',
+        label: '新华网'
+    },
+    {
+        value: '经济日报',
+        label: '经济日报'
+    },
+    {
+        value: '新华社',
+        label: '新华社'
+    },
+    {
+        value: '农民日报',
+        label: '农民日报'
+    },
+    {
+        value: '经济参考报',
+        label: '经济参考报'
+    },
+    {
+        value: '人民网',
+        label: '人民网'
+    },
+    {
+        value: '羊城晚报',
+        label: '羊城晚报'
+    },
+    {
+        value: '中国网',
+        label: '中国网'
+    },
+    {
+        value: '光明日报',
+        label: '光明日报'
+    },
+    {
+        value: '科技日报',
+        label: '科技日报'
+    },
+    {
+        value: '央广网',
+        label: '央广网'
+    }
+])
+// 这是乡村振兴的
+const sourceOrgR = reactive([
+    {
+        value: '江苏省乡村振兴局',
+        label: '江苏省乡村振兴局'
+    },
+    {
+        value: '新华网',
+        label: '新华网'
+    },
+    {
+        value: '新华社',
+        label: '新华社'
+    },
+    {
+        value: '新江苏中国江苏网',
+        label: '新江苏中国江苏网'
+    },
+    {
+        value: '人民日报',
+        label: '人民日报'
+    },
+    {
+        value: '新华日报',
+        label: '新华日报'
+    },
+    {
+        value: '交汇点',
+        label: '交汇点'
+    },
+    {
+        value: '人民网',
+        label: '人民网'
+    },
+    {
+        value: '农民日报',
+        label: '农民日报'
+    },
+    {
+        value: '吉启轩',
+        label: '吉启轩'
+    },
+    {
+        value: '国家乡村振兴局',
+        label: '国家乡村振兴局'
+    },
+    {
+        value: '局机关党委',
+        label: '局机关党委'
+    }
+])
+
+
+// 当页面号改变时调用下面的方法
 const handleCurrentChange = (page) => {
     pageNum.value = page;
-    getNewsList(index.value === 2 ? 'LastMile' : 'logistics', pageSize.value, page)
-    console.log(newsList)
+    if (!isExplore.value)
+        getNewsList(newsType.value, pageSize.value, page)
+    else
+        getNewsExploreList(newsType.value, queryInfo.title, queryInfo.source_org, pageSize.value, page)
 }
 const handleSizeChange = (size) => {
     pageSize.value = size;
 }
 
-// 获取新闻数据
+// 获取新闻数据，初始化页面
 const newsList = reactive([])
 const getNewsList = (value, pageSize = 8, pageNum = 1) => {
     getNewInfoAPI(value, pageSize, pageNum).then(res => {
         newsList.splice(0, newsList.length, ...res.data.rows)
-        lastMileNum.value = res.data.lastMileNum
-        ruralNum.value = res.data.ruralNum
+        newsNum.value = res.data.newsNum
+    }).catch(error => console.log(error))
+}
+
+// 进行新闻的高级查询
+const getNewsExploreList = (type, tilte = '', sourceOrg = '', pageSize = 8, pageNum = 1) => {
+    getNewExploreAPI(type, tilte, sourceOrg, pageSize, pageNum).then(res => {
+        newsList.splice(0, newsList.length, ...res.data.rows)
+        newsNum.value = res.data.newsNum
+        isExplore.value = true
     }).catch(error => console.log(error))
 }
 
 onMounted(() => getNewsList('logistics'))
 
-console.log(newsList)
-
+// 用于切换不同新闻的时候调用的
 const show = (value) => {
     getNewsList(value)
     index.value = value === 'LastMile' ? 2 : 1
 }
+
+// const isPopupVisible = ref(false);
+
+// const showPopup = () => {
+//     isPopupVisible.value = true;
+// };
+
+// const hidePopup = () => {
+//     isPopupVisible.value = false;
+// }
+
 </script>
 <style scoped>
 a {
@@ -161,5 +304,15 @@ div.search_two {
     /* margin-left: 600px; */
     display: flex;
     justify-content: space-around;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>
