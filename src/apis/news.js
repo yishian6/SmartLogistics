@@ -8,7 +8,7 @@ import http from "@/utils/http";
  * @returns 
  */
 
-export const getNewInfoAPI = (news_type, batch_size = 8, batch_num = 1) => {
+export const getNewInfoAPI = (news_type, batch_size = 5, batch_num = 1) => {
     return http({
         url: '/news/index',
         method: "GET",

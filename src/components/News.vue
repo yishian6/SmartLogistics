@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="button">
+            <!-- :class这边是用来实现将选中的标题更改颜色 -->
             <span @click="show('logistics')" :class="index === 1 ? 'active' : ''" class="titleone">乡村振兴</span>
             <span class="center">|</span>
             <span @click="show('LastMile')" :class="index === 2 ? 'active' : ''" class="titletwo">最后一公里</span>
@@ -19,6 +20,9 @@
                     <!-- <template #default="scope">
                         <a :href="scope.row.address" target="_blank">{{ scope.row.name }}</a>
                     </template> -->
+                    <div class="trigger-area" @mouseenter="showPopup" @mouseleave="hidePopup">
+                        {{ row.content }}
+                    </div>
                 </el-table-column>
 
                 <el-table-column prop="publish_date">
@@ -26,7 +30,12 @@
             </el-table>
         </div>
         <div class="bolck">
-            <el-pagination background layout="prev, pager, next" @current-change="currentChange" :total="50" class="mt-4" />
+            <!-- <el-pagination background layout="prev, pager, next" @current-change="currentChange" :total="total"
+                class="mt-4" /> -->
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
+                :page-sizes="[8, 16, 32, 50, 80]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+                :total="index === 1 ? ruralNum : lastMileNum">
+            </el-pagination>
         </div>
 
     </div>
@@ -46,19 +55,38 @@ import { reactive, onMounted, ref } from 'vue'
 //     currentPageTwo: 1,
 //     pagesize: 5,
 // })
+// 用来选择点击了
 let index = ref(1)
+//新闻总数
+const lastMileNum = ref(0)
+const ruralNum = ref(0)
+// pageSize表示页面新闻数
+const pageSize = ref(8)
+const pageNum = ref(1)
 
-const currentChange = (val) => {
-    this.currentPage = val;
+const handleCurrentChange = (page) => {
+    pageNum.value = page;
+    getNewsList(index.value === 2 ? 'LastMile' : 'logistics', pageSize.value, page)
+    console.log(newsList)
+}
+const handleSizeChange = (size) => {
+    pageSize.value = size;
 }
 
 // 获取新闻数据
 const newsList = reactive([])
-const getNewsList = (value) => {
-    getNewInfoAPI(value).then(res => newsList.splice(0, newsList.length, ...res.data)).catch(error => console.log(error))
+const getNewsList = (value, pageSize = 8, pageNum = 1) => {
+    getNewInfoAPI(value, pageSize, pageNum).then(res => {
+        newsList.splice(0, newsList.length, ...res.data.rows)
+        lastMileNum.value = res.data.lastMileNum
+        ruralNum.value = res.data.ruralNum
+    }).catch(error => console.log(error))
 }
+
 onMounted(() => getNewsList('logistics'))
+
 console.log(newsList)
+
 const show = (value) => {
     getNewsList(value)
     index.value = value === 'LastMile' ? 2 : 1
@@ -74,11 +102,6 @@ a {
 
 .el-table {
     margin-left: 8%;
-}
-
-.bolck {
-    margin-top: 100px;
-    margin-left: 600px;
 }
 
 .center {
@@ -131,5 +154,12 @@ div.search_two {
     display: flex;
     justify-content: space-between;
     margin-bottom: 40px;
+}
+
+.bolck {
+    margin-top: 100px;
+    /* margin-left: 600px; */
+    display: flex;
+    justify-content: space-around;
 }
 </style>

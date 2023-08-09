@@ -172,7 +172,7 @@ import { reactive, onMounted } from 'vue'
 
 // 用来存放岗位数据
 const jobList = reactive([])
-const getJobList = getJobListAPI(5, 1).then(res => jobList.splice(0, jobList.length, ...res.data1)).catch(error => console.log(error))
+const getJobList = getJobListAPI(5, 1).then(res => jobList.splice(0, jobList.length, ...res.data.rows)).catch(error => console.log(error))
 
 onMounted(() => getJobList)
 

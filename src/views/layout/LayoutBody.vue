@@ -10,7 +10,7 @@
             <div class="job">
                 <p class="title">岗位招聘</p>
                 <span><a href="http://localhost:8081/#/job" class="more">More</a></span>
-                <div class="design" v-for="item in indexInfo.data2" :key="item.id">
+                <div class="design" v-for="item in indexInfo.job" :key="item.id">
                     <span class="showtext"><a href="https://jobs.51job.com/hefei-gxq/137731079.html?s=sou_sou_soulb&t=0_0"
                             target="_blank" class="small">&nbsp;>&nbsp;{{ item.job_name }}</a></span>
                     <span class="date">{{ item.publish_date }}</span>
@@ -19,7 +19,7 @@
             <div class="news_one">
                 <p class="title">乡村振兴</p>
                 <span><a href="http://localhost:8081/#/news" class="more">More</a></span>
-                <div class="design" v-for="item in indexInfo.data3" :key="item.id">
+                <div class="design" v-for="item in indexInfo.newsR" :key="item.id">
                     <span class="showtext"><a href="https://www.my399.com/p/62169.html" target="_blank"
                             class="small">&nbsp;>&nbsp;{{ item.title }}</a></span>
                     <span class="date">{{ item.publish_date }}</span>
@@ -28,7 +28,7 @@
             <div class="news_two">
                 <p class="title">最后一公里</p>
                 <span><a href="http://localhost:8081/#/news" class="more">More</a></span>
-                <div class="design" v-for="item in indexInfo.data1" :key="item.id">
+                <div class="design" v-for="item in indexInfo.newsL" :key="item.id">
                     <span class="showtext">
                         <a href="http://zj.people.com.cn/n2/2022/0124/c186327-35109244.html" target="_blank"
                             class="small">&nbsp;>&nbsp;{{ item.title }}</a></span>
@@ -53,7 +53,7 @@ import img1 from '@/assets/images/1.png';
 import img2 from '@/assets/images/2.png';
 import img3 from '@/assets/images/3.png';
 
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { getIndexInfoAPI } from '@/apis/layout';
 const imgArray = reactive([
     { url: img1, href: "http://www.gov.cn/zhengce/2021-08/23/content_5632881.htm" },
@@ -64,140 +64,149 @@ const imgArray = reactive([
 // let isHovered = ref(false)
 
 // 用来保存页面展示的数据的
-const indexInfo = ref('')
-const getIndexInfo = getIndexInfoAPI().then(res => indexInfo.value = res).catch(error => console.log(error))
+// const indexInfo = ref(null)
+const indexInfo = reactive({
+    job: '',
+    newsL: '',
+    newsR: ''
+})
+const getIndexInfo = getIndexInfoAPI().then(res => {
+    indexInfo.job = res.data.job,
+        indexInfo.newsL = res.data.newsL,
+        indexInfo.newsR = res.data.newsR
+}).catch(error => console.log(error))
 
 onMounted(() => getIndexInfo)
+console.log(indexInfo)
 </script>
 
-<style scoped>
-.all {
-    background-color: white;
-}
+<style scoped> .all {
+     background-color: white;
+ }
 
-.el-carousel {
-    width: 41.25%;
-    height: 400px;
-    margin-left: 8.25%;
-    float: left;
-    background-color: gainsboro;
-    padding: auto;
-    margin-top: 40px;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+ .el-carousel {
+     width: 41.25%;
+     height: 400px;
+     margin-left: 8.25%;
+     float: left;
+     background-color: gainsboro;
+     padding: auto;
+     margin-top: 40px;
+     border-radius: 20px;
+     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 
-}
+ }
 
-.rightImg {
-    width: 100%;
-    height: 400px;
-}
+ .rightImg {
+     width: 100%;
+     height: 400px;
+ }
 
-.title {
-    font-size: 22px;
-    color: #081562;
-    margin-top: 10px;
-    margin-left: 20px;
-    padding-top: 5px;
-    display: inline-block;
-}
+ .title {
+     font-size: 22px;
+     color: #081562;
+     margin-top: 10px;
+     margin-left: 20px;
+     padding-top: 5px;
+     display: inline-block;
+ }
 
-.job {
-    margin-top: 40px;
-    margin-left: 20px;
-    width: 41.25%;
-    height: 400px;
-    float: left;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
+ .job {
+     margin-top: 40px;
+     margin-left: 20px;
+     width: 41.25%;
+     height: 400px;
+     float: left;
+     background-color: white;
+     border-radius: 20px;
+     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+ }
 
-.design {
-    display: flex;
-    justify-content: space-between;
-}
+ .design {
+     display: flex;
+     justify-content: space-between;
+ }
 
-.news_one {
-    width: 41.25%;
-    height: 410px;
-    float: left;
-    margin-left: 8.25%;
-    margin-bottom: 100px;
-    background-color: white;
-    margin-top: 20px;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
+ .news_one {
+     width: 41.25%;
+     height: 410px;
+     float: left;
+     margin-left: 8.25%;
+     margin-bottom: 100px;
+     background-color: white;
+     margin-top: 20px;
+     border-radius: 20px;
+     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+ }
 
-.news_two {
-    width: 41.25%;
-    height: 410px;
-    margin-top: 20px;
-    float: left;
-    margin-left: 20px;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
+ .news_two {
+     width: 41.25%;
+     height: 410px;
+     margin-top: 20px;
+     float: left;
+     margin-left: 20px;
+     background-color: white;
+     border-radius: 20px;
+     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+ }
 
-a {
-    text-decoration: none;
-    color: black;
-    font-size: 16px;
-    font: 400;
-}
+ a {
+     text-decoration: none;
+     color: black;
+     font-size: 16px;
+     font: 400;
+ }
 
-/* a:hover {
+ /* a:hover {
     color: orange;
 } */
 
-.showtext {
-    width: 80%;
-    /* 禁止文本换行 */
-    white-space: nowrap;
-    /* 隐藏超出容器的内容 */
-    overflow: hidden;
-    /* 超出容器时显示省略号 */
-    text-overflow: ellipsis;
-    margin-top: 20px;
-}
+ .showtext {
+     width: 80%;
+     /* 禁止文本换行 */
+     white-space: nowrap;
+     /* 隐藏超出容器的内容 */
+     overflow: hidden;
+     /* 超出容器时显示省略号 */
+     text-overflow: ellipsis;
+     margin-top: 20px;
+ }
 
-/* 实现当鼠标放在a标签上，showtext对应得标签上 字体颜色改变 */
-.showtext:hover a {
-    color: orange;
+ /* 实现当鼠标放在a标签上，showtext对应得标签上 字体颜色改变 */
+ .showtext:hover a {
+     color: orange;
 
-}
+ }
 
-.showtext:hover {
-    cursor: pointer;
-}
+ .showtext:hover {
+     cursor: pointer;
+ }
 
-.more {
-    float: right;
-    color: rgb(187, 187, 187);
-    margin-right: 10px;
-    margin-top: 8px;
-}
+ .more {
+     float: right;
+     color: rgb(187, 187, 187);
+     margin-right: 10px;
+     margin-top: 8px;
+ }
 
-.date {
-    margin-right: 10px;
-    padding-right: 0px;
-    font-size: 16px;
-    font: 400;
-    margin-top: 20px;
-}
+ .date {
+     margin-right: 10px;
+     padding-right: 0px;
+     font-size: 16px;
+     font: 400;
+     margin-top: 20px;
+ }
 
-.bottom {
-    float: left;
-    margin-left: 10.3%;
-}
+ .bottom {
+     float: left;
+     margin-left: 10.3%;
+ }
 
-img {
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -o-crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    -ms-interpolation-mode: nearest-neighbor;
-}
+ img {
+     image-rendering: -moz-crisp-edges;
+     image-rendering: -o-crisp-edges;
+     image-rendering: -webkit-optimize-contrast;
+     image-rendering: crisp-edges;
+     -ms-interpolation-mode: nearest-neighbor;
+ }
 </style>
