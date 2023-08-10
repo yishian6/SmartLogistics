@@ -36,3 +36,20 @@ export const getNewExploreAPI = (news_type, title = '', source_org = '', batch_s
         }
     })
 }
+
+/**
+ * @description:获取新闻推荐数据
+ * @param:news_type: 表示新闻种类
+ * @param:id: 新闻id
+ * @returns 
+ */
+
+export const getNewsRecommendAPI = (id, news_type) => {
+    return http({
+        url: '/news/recommend',
+        method: 'POST',
+        data: {
+            id, news_type
+        }
+    })
+}

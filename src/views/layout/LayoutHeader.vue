@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar" style="background-color:rgb(228, 143, 137)">
         <div class="container">
-            <el-menu class="sidebar-el-menu" :default-active="router.path" :collapse="collapse"
+            <el-menu class="sidebar-el-menu" :default-active="activeIndex" @select="handleMenuSelect" :collapse="collapse"
                 background-color="rgb(228, 143, 137)" text-color="#fff" active-text-color="#FFCC99" mode="horizontal"
                 router>
                 <template v-for="item in items" :key="item.index">
@@ -38,9 +38,10 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const activeIndex = ref('/index')
 const collapse = ref(false)
-const router = useRoute()
 const items = reactive([
     {
         title: '首页',
@@ -63,6 +64,12 @@ const items = reactive([
         index: 'center',
     }
 ])
+
+const handleMenuSelect = (index) => {
+    activeIndex.value = index; // 更新选中的菜单项
+    // 切换到新的路由
+    router.replace({ path: '/' + index })
+}
 
 </script>
 <style scoped>

@@ -9,29 +9,39 @@
             </el-carousel>
             <div class="job">
                 <p class="title">岗位招聘</p>
-                <span><a href="http://localhost:8081/#/job" class="more">More</a></span>
+                <span>
+                    <RouterLink to="/job" class="more">More</RouterLink>
+                </span>
                 <div class="design" v-for="item in indexInfo.job" :key="item.id">
-                    <span class="showtext"><a href="https://jobs.51job.com/hefei-gxq/137731079.html?s=sou_sou_soulb&t=0_0"
-                            target="_blank" class="small">&nbsp;>&nbsp;{{ item.job_name }}</a></span>
+                    <span class="showtext">
+                        <RouterLink :to="`/job/page/${item.id}`" class="small">&nbsp;>&nbsp;{{ item.job_name }}</RouterLink>
+                    </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
             </div>
             <div class="news_one">
                 <p class="title">乡村振兴</p>
-                <span><a href="http://localhost:8081/#/news" class="more">More</a></span>
+                <span>
+                    <RouterLink to="/news" class="more">More</RouterLink>
+                </span>
                 <div class="design" v-for="item in indexInfo.newsR" :key="item.id">
-                    <span class="showtext"><a href="https://www.my399.com/p/62169.html" target="_blank"
-                            class="small">&nbsp;>&nbsp;{{ item.title }}</a></span>
+                    <span class="showtext">
+                        <RouterLink :to="`/news/page/${item.id}/${newsType.rural}`" class="small">&nbsp;>&nbsp;{{ item.title
+                        }}</RouterLink>
+                    </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
             </div>
             <div class="news_two">
                 <p class="title">最后一公里</p>
-                <span><a href="http://localhost:8081/#/news" class="more">More</a></span>
+                <span>
+                    <RouterLink to="/news" class="more">More</RouterLink>
+                </span>
                 <div class="design" v-for="item in indexInfo.newsL" :key="item.id">
                     <span class="showtext">
-                        <a href="http://zj.people.com.cn/n2/2022/0124/c186327-35109244.html" target="_blank"
-                            class="small">&nbsp;>&nbsp;{{ item.title }}</a></span>
+                        <RouterLink :to="`/news/page/${item.id}/${newsType.last}`" class="small">&nbsp;>&nbsp;{{ item.title
+                        }}</RouterLink>
+                    </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
             </div>
@@ -65,6 +75,10 @@ const imgArray = reactive([
 
 // 用来保存页面展示的数据的
 // const indexInfo = ref(null)
+const newsType = reactive({
+    last: 'LastMile',
+    rural: 'Rural'
+})
 const indexInfo = reactive({
     job: '',
     newsL: '',
@@ -77,7 +91,6 @@ const getIndexInfo = getIndexInfoAPI().then(res => {
 }).catch(error => console.log(error))
 
 onMounted(() => getIndexInfo)
-console.log(indexInfo)
 </script>
 
 <style scoped> .all {
@@ -157,10 +170,6 @@ console.log(indexInfo)
      font: 400;
  }
 
- /* a:hover {
-    color: orange;
-} */
-
  .showtext {
      width: 80%;
      /* 禁止文本换行 */
@@ -185,8 +194,8 @@ console.log(indexInfo)
  .more {
      float: right;
      color: rgb(187, 187, 187);
-     margin-right: 10px;
-     margin-top: 8px;
+     margin-right: 20px;
+     margin-top: 10px;
  }
 
  .date {

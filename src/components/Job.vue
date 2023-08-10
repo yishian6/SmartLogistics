@@ -4,19 +4,19 @@
       <!-- 搜索条件 -->
       <el-row :gutter="20" class="queryInfo">
         <el-col :xs="8" :sm="6" :md="6" :lg="5" :xl="5">
-          <el-input class="queryInfo-li-one" v-model="queryInfo.name" clearable="true" size="large"
+          <el-input class="queryInfo-li-one" v-model="queryInfo.name" clearable size="large"
             placeholder="请输入岗位名称"></el-input>
         </el-col>
-        <el-select v-model="queryInfo.company_type" placeholder="公司分类选择" clearable="true" size="large">
+        <el-select v-model="queryInfo.company_type" placeholder="公司分类选择" clearable size="large">
           <el-option v-for="item in company_type" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-model="queryInfo.location" placeholder="地理位置选择" clearable="true" size="large">
+        <el-select v-model="queryInfo.location" placeholder="地理位置选择" clearable size="large">
           <el-option v-for="item in location" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
 
-        <el-select v-model="queryInfo.main_business" placeholder="主要业务选择" clearable="true" size="large">
+        <el-select v-model="queryInfo.main_business" placeholder="主要业务选择" clearable size="large">
           <el-option v-for="item in main_business" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -29,7 +29,7 @@
     </div>
     <div class="job_two">
       <div v-for="item in jobList" :key="item.id" class="offers">
-        <a href="#" target="_blank">
+        <RouterLink :to="`/job/page/${item.id}`">
           <div class="first">
             <a href="#" class="job_name">{{ item.job_name }}</a>
             <span class="date_two">{{ item.publish_date }}</span>
@@ -44,7 +44,7 @@
             <span class="benefits">{{ item.benefits }}</span>
             <span class="main_business">{{ item.main_business }}</span>
           </div>
-        </a>
+        </RouterLink>
       </div>
       <div class="block_two">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
@@ -370,6 +370,10 @@ const handleCurrentChange = (page) => {
 }
 const handleSizeChange = (size) => {
   pageSize.value = size;
+  if (isExplore.value)
+    getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, size, pageNum.value)
+  else
+    getJobList(size, pageNum.value)
 }
 onMounted(() => getJobList())
 </script>

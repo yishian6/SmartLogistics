@@ -1,7 +1,9 @@
 <template>
     <div class="topbar">
         <div class="container">
-            <div class="logo"><span class="name">智邮</span><img src="@/assets/images/zhiyou.png" class="logoimg" alt="">
+            <div class="logo"><span class="name">智邮</span>
+                <img src="@/assets/images/nanyou.jpg" class="schimg" alt="">
+                <img src="@/assets/images/zhiyou.png" class="logoimg" alt="">
             </div>
             <span class="applet">小程序<img src="@/assets/images/Top-two.png" class="right" alt=""></span>
         </div>
@@ -9,14 +11,9 @@
 </template>
 
 <style scoped>
-* {
-    margin: 0px;
-    padding: 0px;
-}
-
 .topbar {
+    margin-top: 10px;
     box-sizing: border-box;
-
     height: 100px;
     font-size: 22px;
     background-color: #fff;
@@ -45,6 +42,11 @@
 
 .logoimg {
     width: 100px;
+    padding-top: 10px;
+}
+
+.schimg {
+    width: 70px;
     padding-top: 10px;
 }
 

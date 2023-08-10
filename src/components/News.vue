@@ -20,6 +20,7 @@
                 <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
                     <el-button type="primary" :plain="true" class="queryInfo-li-two"
                         @click="getNewsExploreList(newsType, queryInfo.title, queryInfo.source_org)">搜索</el-button>
+                    {{ newsType }}
                 </el-col>
             </el-row>
         </div>
@@ -28,9 +29,9 @@
         <div class="news">
             <el-table :data="newsList" style="width: 1000px; margin: 0 auto;cursor: pointer;">
                 <el-table-column prop="title" width="850">
-                    <!-- <template #default="scope">
-                        <a :href="scope.row.address" target="_blank">{{ scope.row.name }}</a>
-                    </template> -->
+                    <template v-slot="item">
+                        <router-link :to="`/news/page/${item.row.id}/${newsType}`">{{ item.row.title }}</router-link>
+                    </template>
                     <!-- <div style="float: right; margin-top: 20px; height: 100px" class="popup" @mouseenter="showPopup()"
                         @mouseleave="hidePopup()">
                         <transition name="fade">
@@ -40,10 +41,9 @@
                         </transition>
                     </div> -->
                 </el-table-column>
-
-
                 <el-table-column prop="publish_date">
                 </el-table-column>
+
             </el-table>
         </div>
         <div class="bolck">
@@ -196,6 +196,10 @@ const handleCurrentChange = (page) => {
 }
 const handleSizeChange = (size) => {
     pageSize.value = size;
+    if (!isExplore.value)
+        getNewsList(newsType.value, size, pageNum.value)
+    else
+        getNewsExploreList(newsType.value, queryInfo.title, queryInfo.source_org, size, pageNum.value)
 }
 
 // 获取新闻数据，初始化页面
@@ -223,6 +227,7 @@ const show = (value) => {
     getNewsList(value)
     index.value = value === 'LastMile' ? 2 : 1
 }
+
 
 // const isPopupVisible = ref(false);
 

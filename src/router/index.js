@@ -23,9 +23,19 @@ const router = createRouter({
           meta: { title: "岗位招聘" }
         },
         {
+          path: '/job/page/:id',
+          component: () => import('@/components/JobPage.vue'),
+          meta: { title: "岗位信息" }
+        },
+        {
           path: '/news',
           component: () => import('@/components/News.vue'),
           meta: { title: "新闻传递" }
+        },
+        {
+          path: '/news/page/:id/:newsType',
+          component: () => import('@/components/NewsPage.vue'),
+          meta: { title: "新闻信息" }
         },
         {
           path: '/aboutus',
