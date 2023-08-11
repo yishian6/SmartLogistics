@@ -19,7 +19,7 @@
                 </el-select>
                 <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
                     <el-button type="primary" :plain="true" class="queryInfo-li-two"
-                        @click="getNewsExploreList(newsType, queryInfo.title, queryInfo.source_org)">搜索</el-button>
+                        @click="getNewsExploreList(newsType, queryInfo.title, queryInfo.source_org, pageSize, 1, 0)">搜索</el-button>
                 </el-col>
             </el-row>
         </div>
@@ -59,7 +59,8 @@
 <script setup>
 import { getNewInfoAPI, getNewExploreAPI } from '@/apis/news';
 import { reactive, onMounted, ref, computed } from 'vue'
-
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
 // 用来选择点击了那种新闻
 let index = ref(1)
 // 用来标记当前是index接口还是explore接口
@@ -77,7 +78,7 @@ const queryInfo = reactive({
     source_org: ''
 })
 // 高级搜索的选项
-// 这是最后一公里的
+// 这是最后一公里的搜索提示消息
 const sourceOrgL = reactive([
     {
         value: '央视网',
@@ -132,7 +133,7 @@ const sourceOrgL = reactive([
         label: '央广网'
     }
 ])
-// 这是乡村振兴的
+// 这是乡村振兴的搜索提示消息
 const sourceOrgR = reactive([
     {
         value: '江苏省乡村振兴局',
@@ -210,24 +211,34 @@ const getNewsList = (value, pageSize = 8, pageNum = 1) => {
     }).catch(error => console.log(error))
 }
 
-// 进行新闻的高级查询
-const getNewsExploreList = (type, tilte = '', sourceOrg = '', pageSize = 8, pageNum = 1) => {
+// 进行新闻的高级查询  flag在这里是用来判断该搜索是点击按钮时，还是下面的页码
+const getNewsExploreList = (type, tilte = '', sourceOrg = '', pageSize = 8, pageNum = 1, flag = 1) => {
     getNewExploreAPI(type, tilte, sourceOrg, pageSize, pageNum).then(res => {
         newsList.splice(0, newsList.length, ...res.data.rows)
         newsNum.value = res.data.newsNum
         isExplore.value = true
+        if (flag === 0)
+            exploreMsg()
     }).catch(error => console.log(error))
 }
-
 onMounted(() => getNewsList('logistics'))
 
 // 用于切换不同新闻的时候调用的
 const show = (value) => {
-    getNewsList(value)
+    pageNum.value = 1   // 将页面切换回一号页面
+    getNewsList(value, pageSize.value, pageNum.value)  // 重新加载新闻
     index.value = value === 'LastMile' ? 2 : 1
 }
 
-
+// 实现当搜索成功时候弹出提示框
+const exploreMsg = async () => {
+    pageNum.value = 1   // 将页面切换回一号页面
+    ElMessage({         // 弹出提示搜索结果消息
+        showClose: true,
+        message: '搜索成功',
+        type: 'success',
+    })
+}
 // const isPopupVisible = ref(false);
 
 // const showPopup = () => {

@@ -22,7 +22,7 @@
         </el-select>
         <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
           <el-button type="primary" :plain="true" class="goodsindex-queryInfo-li-two"
-            @click="getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, pageSize, pageNum)"
+            @click="getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, pageSize, 1, 0)"
             size="large">搜索</el-button>
         </el-col>
       </el-row>
@@ -192,7 +192,8 @@ export default {
 <script setup>
 import { getJobListAPI, getJobExploreAPI } from '@/apis/job'
 import { reactive, ref, onMounted } from 'vue'
-
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
 // isExplore
 const isExplore = ref(false)
 
@@ -352,11 +353,13 @@ const getJobList = (size = 5, num = 1) => {
 }
 
 // 进行新闻的高级查询
-const getJobExploreList = (name = '', type = '', location = '', mainBusiness = '', pageSize = 8, pageNum = 1) => {
+const getJobExploreList = (name = '', type = '', location = '', mainBusiness = '', pageSize = 8, pageNum = 1, flag = 1) => {
   getJobExploreAPI(name, type, location, mainBusiness, pageSize, pageNum).then(res => {
     jobList.splice(0, jobList.length, ...res.data.rows)
     jobNum.value = res.data.jobNum
     isExplore.value = true
+    if (flag === 0)
+      exploreMsg()
   }).catch(error => console.log(error))
 }
 
@@ -369,12 +372,23 @@ const handleCurrentChange = (page) => {
     getJobList(pageSize.value, page)
 
 }
+// 当页面的大小改变时调用
 const handleSizeChange = (size) => {
   pageSize.value = size;
   if (isExplore.value)
     getJobExploreList(queryInfo.name, queryInfo.company_type, queryInfo.location, queryInfo.main_business, size, pageNum.value)
   else
     getJobList(size, pageNum.value)
+}
+
+// 实现当搜索成功时候弹出提示框
+const exploreMsg = async () => {
+  pageNum.value = 1   // 将页面切换回一号页面
+  ElMessage({         // 弹出提示搜索结果消息
+    showClose: true,
+    message: '搜索成功',
+    type: 'success',
+  })
 }
 onMounted(() => getJobList())
 </script>

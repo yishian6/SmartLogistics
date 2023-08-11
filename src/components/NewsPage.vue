@@ -6,8 +6,7 @@
             <span>&nbsp;&nbsp;来源: {{ newsInfo.source_org }}</span>
         </div>
         <div class="content">
-            <!-- <span class="paragraph" v-for="(paragraph, index) in newsInfo.content" :key="index">{{ paragraph }}</span> -->
-            {{ newsInfo.content }}
+            <p class="paragraph" v-for="(paragraph, index) in newsContentList" :key="index">{{ paragraph }}</p>
         </div>
         <div class="monitor">
             <el-row :gutter="20" class="monitor-header">
@@ -55,15 +54,20 @@ const reqInfo = reactive({
 const newsInfo = ref({})
 // 推荐新闻的信息
 const newsRecList = reactive([])
+// 用来保存新闻的正文
+const newsContentList = reactive([])
 
 const getNewsRecommend = () => {
     getNewsRecommendAPI(reqInfo.id, reqInfo.newsType).then(res => {
         newsInfo.value = res.data.info[0]
         newsRecList.splice(0, newsRecList.length, ...res.data.recommend)
+        newsContentList.splice(0, newsContentList.length, ...newsInfo.value.content.split('\n'))
     }).catch(error => console.log(error))
 
 }
-onMounted(() => getNewsRecommend())
+onMounted(() => {
+    getNewsRecommend()
+})
 </script>
 
 <style scoped>
@@ -101,7 +105,7 @@ onMounted(() => getNewsRecommend())
 
 .paragraph {
     text-indent: 2em;
-    /* line-height: 1.25em; */
+    line-height: 1.75em;
 }
 
 /* 推荐部分 */
