@@ -20,7 +20,6 @@
                 <el-col :xs="6" :sm="4" :md="3" :lg="2" :xl="2">
                     <el-button type="primary" :plain="true" class="queryInfo-li-two"
                         @click="getNewsExploreList(newsType, queryInfo.title, queryInfo.source_org)">搜索</el-button>
-                    {{ newsType }}
                 </el-col>
             </el-row>
         </div>
@@ -241,6 +240,13 @@ const show = (value) => {
 
 </script>
 <style scoped>
+.container {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
 a {
     text-decoration: none;
     color: black;
@@ -297,12 +303,6 @@ div.search_two {
     padding: 16px 0;
 }
 
-.container {
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 40px;
-}
 
 .bolck {
     margin-top: 100px;

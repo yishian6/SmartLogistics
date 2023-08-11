@@ -31,7 +31,7 @@
       <div v-for="item in jobList" :key="item.id" class="offers">
         <RouterLink :to="`/job/page/${item.id}`">
           <div class="first">
-            <a href="#" class="job_name">{{ item.job_name }}</a>
+            <span class="job_name">{{ item.job_name }}</span>
             <span class="date_two">{{ item.publish_date }}</span>
             <a :href="item.company_address" class="company_name">{{ item.company_name }}</a>
           </div>
@@ -40,11 +40,12 @@
             <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
             <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
           </div>
-          <div class="second">
-            <span class="benefits">{{ item.benefits }}</span>
-            <span class="main_business">{{ item.main_business }}</span>
-          </div>
         </RouterLink>
+        <div class="second">
+          <span class="benefits">{{ item.benefits }}</span>
+          <span class="main_business">{{ item.main_business }}</span>
+        </div>
+
       </div>
       <div class="block_two">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
@@ -452,6 +453,14 @@ onMounted(() => getJobList())
 .benefits {
   font-size: 12px;
   color: #999;
+  display: inline-block;
+  width: 80%;
+  /* 禁止文本换行 */
+  white-space: nowrap;
+  /* 隐藏超出容器的内容 */
+  overflow: hidden;
+  /* 超出容器时显示省略号 */
+  text-overflow: ellipsis;
 }
 
 .main_business {

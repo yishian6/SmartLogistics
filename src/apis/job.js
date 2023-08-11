@@ -37,3 +37,20 @@ export const getJobExploreAPI = (job_name = '', company_type = '', location = ''
         }
     })
 }
+
+
+/**
+ * @description:获取岗位推荐数据
+ * @param:id: 新闻id
+ * @returns 
+ */
+
+export const getJobRecommendAPI = (id) => {
+    return http({
+        url: '/job/recommend',
+        method: 'POST',
+        data: {
+            id
+        }
+    })
+}
