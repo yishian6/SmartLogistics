@@ -14,7 +14,8 @@
                 </span>
                 <div class="design" v-for="item in indexInfo.job" :key="item.id">
                     <span class="showtext">
-                        <RouterLink :to="`/job/page/${item.id}`" class="small">&nbsp;>&nbsp;{{ item.job_name }}</RouterLink>
+                        <RouterLink :to="`/job/page/${item.id}`" target="_blank" class="small">&nbsp;>&nbsp;{{ item.job_name
+                        }}</RouterLink>
                     </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
@@ -26,8 +27,8 @@
                 </span>
                 <div class="design" v-for="item in indexInfo.newsR" :key="item.id">
                     <span class="showtext">
-                        <RouterLink :to="`/news/page/${item.id}/${newsType.rural}`" class="small">&nbsp;>&nbsp;{{ item.title
-                        }}</RouterLink>
+                        <RouterLink :to="`/news/page/${item.id}/${newsType.rural}`" target="_blank" class="small">
+                            &nbsp;>&nbsp;{{ item.title }}</RouterLink>
                     </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
@@ -39,8 +40,8 @@
                 </span>
                 <div class="design" v-for="item in indexInfo.newsL" :key="item.id">
                     <span class="showtext">
-                        <RouterLink :to="`/news/page/${item.id}/${newsType.last}`" class="small">&nbsp;>&nbsp;{{ item.title
-                        }}</RouterLink>
+                        <RouterLink :to="`/news/page/${item.id}/${newsType.last}`" target="_blank" class="small">
+                            &nbsp;>&nbsp;{{ item.title }}</RouterLink>
                     </span>
                     <span class="date">{{ item.publish_date }}</span>
                 </div>
@@ -95,6 +96,7 @@ onMounted(() => getIndexInfo)
 
 <style scoped> .all {
      background-color: white;
+     user-select: text;
  }
 
  .el-carousel {

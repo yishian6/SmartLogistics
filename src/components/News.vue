@@ -25,11 +25,12 @@
         </div>
     </div>
     <div class="one">
-        <div class="news">
+        <div class="news" style="user-select: text;">
             <el-table :data="newsList" style="width: 1000px; margin: 0 auto;cursor: pointer;">
                 <el-table-column prop="title" width="850">
                     <template v-slot="item">
-                        <router-link :to="`/news/page/${item.row.id}/${newsType}`">{{ item.row.title }}</router-link>
+                        <router-link :to="`/news/page/${item.row.id}/${newsType}`" target="_blank">{{ item.row.title
+                        }}</router-link>
                     </template>
                     <!-- <div style="float: right; margin-top: 20px; height: 100px" class="popup" @mouseenter="showPopup()"
                         @mouseleave="hidePopup()">

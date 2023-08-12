@@ -29,18 +29,18 @@
     </div>
     <div class="job_two">
       <div v-for="item in jobList" :key="item.id" class="offers">
-        <RouterLink :to="`/job/page/${item.id}`">
+        <RouterLink :to="`/job/page/${item.id}`" target="_blank">
           <div class="first">
             <span class="job_name">{{ item.job_name }}</span>
             <span class="date_two">{{ item.publish_date }}</span>
             <a :href="item.company_address" class="company_name">{{ item.company_name }}</a>
           </div>
-          <div class="second">
-            <span class="salary">{{ item.salary }}</span>
-            <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
-            <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
-          </div>
         </RouterLink>
+        <div class="second">
+          <span class="salary">{{ item.salary }}</span>
+          <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
+          <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
+        </div>
         <div class="second">
           <span class="benefits">{{ item.benefits }}</span>
           <span class="main_business">{{ item.main_business }}</span>
@@ -527,6 +527,7 @@ onMounted(() => getJobList())
   float: left;
   background-color: white;
   border-radius: 20px;
+  user-select: text;
 }
 
 body {

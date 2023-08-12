@@ -25,7 +25,8 @@
                             <el-card v-for="news in newsRecList" :key="news.id" class="itemList">
                                 <el-row type="flex" justify="space-between">
                                     <el-col class="rectitle" :span="21.4">
-                                        <RouterLink :to="`/news/page/${news.id}/${reqInfo.newsType}`">{{ news.title }}
+                                        <RouterLink :to="`/news/page/${news.id}/${reqInfo.newsType}`" target="_blank">
+                                            {{ news.title }}
                                         </RouterLink>
                                     </el-col>
                                     <el-col class="publish_date" :span="2.6">{{ news.publish_date }}</el-col>
@@ -75,6 +76,7 @@ onMounted(() => {
     background: #ffffff;
     width: 80.26%;
     margin: 0 auto;
+    user-select: text;
 }
 
 .title {

@@ -45,7 +45,7 @@
                         <el-row class="recommend">
                             <el-col v-for="item in jobRecList" :key="item.id" class="reccol">
                                 <el-card class="offers">
-                                    <RouterLink :to="`/job/page/${item.id}`">
+                                    <RouterLink :to="`/job/page/${item.id}`" target="_blank">
                                         <div class="infosty">
                                             <div>
                                                 <span class="job_name">{{ item.job_name }}</span>
@@ -54,16 +54,14 @@
                                             <a :href="item.company_address" class="company_name">{{ item.company_name }}</a>
                                         </div>
                                     </RouterLink>
-                                    <RouterLink :to="`/job/page/${item.id}`">
-                                        <div class="infosty">
-                                            <div>
-                                                <span class="salary">{{ item.salary }}</span>
-                                                <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
-                                            </div>
-                                            <span class="company_type">{{ item.company_type }}|{{ item.company_scale
-                                            }}</span>
+                                    <div class="infosty">
+                                        <div>
+                                            <span class="salary">{{ item.salary }}</span>
+                                            <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
                                         </div>
-                                    </RouterLink>
+                                        <span class="company_type">{{ item.company_type }}|{{ item.company_scale
+                                        }}</span>
+                                    </div>
                                     <div class="infosty">
                                         <span class="benefits">{{ item.benefits }}</span>
                                         <span class="main_business">{{ item.main_business }}</span>
@@ -162,6 +160,7 @@ onMounted(() => getJobRecommend())
     padding: 25px;
     width: 100%;
     min-height: 100%;
+    user-select: text;
 }
 
 .main {
