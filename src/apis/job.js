@@ -55,6 +55,18 @@ export const getJobRecommendAPI = (id) => {
     })
 }
 
+/**
+ * @description:薪水地区统计接口
+ * @param:
+ * @returns 
+ */
+
+export const getJobCountAPI = () => {
+    return http({
+        url: '/job/count',
+        method: 'GET'
+    })
+}
 
 /**
  * @description:获取岗位推荐数据

@@ -62,7 +62,7 @@ const getNewsRecommend = () => {
     getNewsRecommendAPI(reqInfo.id, reqInfo.newsType).then(res => {
         newsInfo.value = res.data.info[0]
         newsRecList.splice(0, newsRecList.length, ...res.data.recommend)
-        newsContentList.splice(0, newsContentList.length, ...newsInfo.value.content.split('\n'))
+        newsContentList.splice(0, newsContentList.length, ...newsInfo.value.content.split('   '))
     }).catch(error => console.log(error))
 
 }

@@ -55,148 +55,24 @@
       </div>
       <div style="width:600px;height:100px;"></div>
     </div>
-    <!-- <div class="charts">
+    <div class="charts">
       <div style="width:600px;height:400px;">
         <div id="myChart" style="width:100%;height:278px;"></div>
       </div>
       <div style="width:600px;height:400px;">
         <div id="myChart4" style="width:100%;height:250px;float:left;"></div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
-<!-- <script>
-export default {
-  data() {
-    return {
-
-      currentPage: 1,
-      pagesize: 5,
-      input: "",
-      myChart: '',
-      opinionData2: [
-        { value: 1, name: '3000以下', itemStyle: '#009999' },
-        { value: 2, name: '3000-8000', itemStyle: '#1FC48D' },
-        { value: 3, name: '8000-12000', itemStyle: '#6DC8EC' },
-        { value: 3, name: '12000-15000', itemStyle: '#3F8FFF' },
-        { value: 3, name: '15000-20000', itemStyle: '#ff6666' },
-        { value: 3, name: '20000以上', itemStyle: '#ffcc00' }
-      ],
-      myChart4: '',
-      opinion: ['上海', '苏州', '南京', '蚌埠', '南通', '合肥'],
-      opinionData: [
-        { value: 220, itemStyle: '#1ab394' },
-        { value: 180, itemStyle: '#009999' },
-        { value: 800, itemStyle: '#19CAAD' },
-        { value: 600, itemStyle: '#8CC7B5' },
-        { value: 570, itemStyle: '#A0EEE1' },
-        { value: 310, itemStyle: '#BEE7E9' },
-      ]
-
-    }
-  },
-  mounted: function () {
-    this.drawLine()
-  },
-  methods: {
-    currentChange(val) {
-      this.currentPage = val;
-    },
-    drawLine() {
-      this.myChart = this.$echarts.init(document.getElementById('myChart'))
-      this.myChart.setOption({
-        title: {
-          text: '薪酬', // 主标题
-          subtext: '', // 副标题
-          x: 'left' // x轴方向对齐方式
-        },
-        grid: { containLabel: true },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {d}%'
-        },
-
-        color: ['red', '#1FC48D', '#6DC8EC', '#3F8FFF', '#ff6666', '#ffcc00'],
-
-        legend: {
-          orient: 'vertical',
-          icon: 'circle',
-          align: 'left',
-          x: 'right',
-          y: 'bottom',
-          data: ['3000以下', '3000-8000', '8000-12000', '12000-15000', '15000-20000', '20000以上']
-        },
-        series: [
-          {
-            name: '薪酬',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            avoidLabelOverlap: false,
-            center: ['40%', '50%'],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              },
-              color: function (params) {
-                // 自定义颜色
-                var colorList = ['#009999', '#1FC48D', '#6DC8EC', '#3F8FFF', '#ff6666', '#ffcc00']
-                return colorList[params.dataIndex]
-              }
-            },
-            data: this.opinionData2
-          }
-        ]
-      })
-      this.myChart4 = this.$echarts.init(document.getElementById('myChart4'))
-      this.myChart4.setOption({
-        title: {
-          text: '地域'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c}%'
-        },
-        legend: {
-          orient: 'vertical',
-          x: 'right',
-          y: 'top',
-        },
-        xAxis: {
-          data: this.opinion
-        },
-        yAxis: {},
-        series: [{
-          name: '地域',
-          type: 'bar',
-          data: this.opinionData,
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            },
-            color: function (params) {
-              // 自定义颜色
-              var colorList = ['#1ab394', '#009999', '#19CAAD', '#8CC7B5', '#A0EEE1', '#BEE7E9',]
-              return colorList[params.dataIndex]
-            }
-          }
-        }]
-      })
-    }
-  }
-}
-</script> -->
 
 <script setup>
-import { getJobListAPI, getJobExploreAPI } from '@/apis/job'
+import { getJobListAPI, getJobExploreAPI, getJobCountAPI } from '@/apis/job'
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import JobChat from './JobChat.vue'
-
+import * as echarts from 'echarts';
 // isExplore
 const isExplore = ref(false)
 
@@ -393,7 +269,118 @@ const exploreMsg = async () => {
     type: 'success',
   })
 }
-onMounted(() => getJobList())
+
+//实现图表
+const getJobCount = () => {
+  getJobCountAPI().then(res => {
+    // console.log(res, "getJobCount")
+    const salaryList = res.data.salary_count
+    const areaList = res.data.area_count
+    let dataArray = []
+    Object.keys(salaryList).forEach((item) => {
+      const obj = {
+        value: salaryList[item],
+        name: item
+      }
+      dataArray.push(obj)
+    })
+    // 销毁现有的图表实例
+    const existingChart = echarts.getInstanceByDom(document.getElementById('myChart'));
+    if (existingChart) {
+      existingChart.dispose();
+    }
+    const chartDom = document.getElementById('myChart');
+    const myChart = echarts.init(chartDom);
+    const option = {
+      title: {
+        text: '薪酬',
+        left: 'left'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        type: 'scroll',
+        orient: 'vertical',
+        right: 10,
+        bottom: 0,
+      },
+      series: [
+        {
+          name: '薪酬范围',
+          type: 'pie',
+          radius: ['70%', '90%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 40,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: dataArray
+        }
+      ]
+    };
+
+    option && myChart.setOption(option);
+
+    const existingChart4 = echarts.getInstanceByDom(document.getElementById('myChart4'));
+    if (existingChart4) {
+      existingChart4.dispose();
+    }
+    const myChart4 = echarts.init(document.getElementById('myChart4'))
+    myChart4.setOption({
+      title: {
+        text: '地域'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}'
+      },
+      legend: {
+        orient: 'vertical',
+        x: 'right',
+        y: 'top',
+      },
+      xAxis: {
+        data: areaList[0],
+        axisLabel: {
+          interval: 0,//代表显示所有x轴标签显示
+          rotate: 45, //代表逆时针旋转45度
+        }
+      },
+      yAxis: {},
+      series: [{
+        name: '地域',
+        type: 'bar',
+        data: areaList[1],
+
+      }],
+      itemStyle: {
+        emphasis: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    })
+
+
+  }).catch(error => console.log(error))
+}
+
+onMounted(() => {
+  getJobList()
+  getJobCount()
+})
 </script>
 
 
@@ -517,7 +504,7 @@ onMounted(() => getJobList())
 
 .charts {
   float: right;
-  margin-right: 3.2%;
+  margin-right: 2.2%;
   margin-top: 150px;
 }
 

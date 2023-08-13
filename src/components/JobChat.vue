@@ -43,6 +43,8 @@
 <script setup>
 import { getJobSmartRecAPI } from '@/apis/job';
 import { ref, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
 // 用来控制图标和聊天框的切换
 const change = ref(false)
 
@@ -59,7 +61,10 @@ const changeL = () => {
 }
 const sendMessage = () => {
     if (message.value === '') {
-        alert('输入内容不能为空');
+        ElMessage({
+            message: '输入内容不能为空!!!',
+            type: 'warning',
+        })
         return;
     }
 
@@ -77,6 +82,11 @@ const sendMessage = () => {
 }
 const scrollMsgBottom = () => {
     msgBox.value.scrollTop = msgBox.value.scrollHeight;
+}
+
+document.onkeydown = function () {
+    var e = window.event || arguments.callee.caller.arguments[0]   //  arguments.callee.caller.arguments[0]也相当于window.event的值
+    e.keyCode === 13 && sendMessage();
 }
 </script>
 
@@ -230,7 +240,7 @@ const scrollMsgBottom = () => {
     background-color: #ebebeb;
     box-sizing: border-box;
     box-shadow: 0 -2px 5px #d8d8d8;
-    margin-top: 5px
+    margin-top: 3px
 }
 
 .ui_guide .chat .cont .inp {
@@ -269,7 +279,8 @@ const scrollMsgBottom = () => {
     background-color: #cccccc;
     border: 0;
     border-radius: 20px;
-    font-weight: bold
+    font-weight: bold;
+    margin-left: 3px;
 }
 
 .ui_guide .chat .cont .send:hover {
