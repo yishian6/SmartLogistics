@@ -41,7 +41,7 @@ export const getJobExploreAPI = (job_name = '', company_type = '', location = ''
 
 /**
  * @description:获取岗位推荐数据
- * @param:id: 新闻id
+ * @param:id: 岗位id
  * @returns 
  */
 
@@ -52,5 +52,19 @@ export const getJobRecommendAPI = (id) => {
         data: {
             id
         }
+    })
+}
+
+
+/**
+ * @description:获取岗位推荐数据
+ * @param:job_reqiure: 岗位需求
+ * @returns 
+ */
+export const getJobSmartRecAPI = (job_require) => {
+    return http({
+        url: "/job/smart/recommend",
+        method: 'GET',
+        params: { job_require }
     })
 }

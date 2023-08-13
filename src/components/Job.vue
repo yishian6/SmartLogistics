@@ -28,6 +28,7 @@
       </el-row>
     </div>
     <div class="job_two">
+      <JobChat />
       <div v-for="item in jobList" :key="item.id" class="offers">
         <RouterLink :to="`/job/page/${item.id}`" target="_blank">
           <div class="first">
@@ -194,6 +195,8 @@ import { getJobListAPI, getJobExploreAPI } from '@/apis/job'
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
+import JobChat from './JobChat.vue'
+
 // isExplore
 const isExplore = ref(false)
 
@@ -412,7 +415,7 @@ onMounted(() => getJobList())
 
 .offers {
   margin-bottom: 8px;
-  position: relative;
+  /* position: relative; */
   overflow: hidden;
   padding: 16px 32px 16px 38px;
   background-color: #fff;
