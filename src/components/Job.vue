@@ -66,6 +66,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { getJobListAPI, getJobExploreAPI, getJobCountAPI } from '@/apis/job'
 import { reactive, ref, onMounted } from 'vue'
