@@ -48,14 +48,15 @@
             </div>
         </div>
         <div class="bottom">
-            <span class="bottom_img"><a href="https://www.njupt.edu.cn" target="_blank"><img
-                        src="@/assets/images/Bottom_one.png" alt="南京邮电大学" width="300px" height="70px"></a></span>
             <span class="bottom_img"><a href="http://www.spb.gov.cn/" target="_blank"><img
                         src="@/assets/images/Bottom_two.png" alt="国家邮政局" width="300px" height="70px"></a></span>
+            <span class="bottom_img"><a href="http://www.zgxczx.cn/" target="_blank"><img
+                        src="@/assets/images/Bottom_forth.png" alt="乡村振兴网" width="300px" height="70px"></a></span>
+            <span class="bottom_img"><a href="https://www.njupt.edu.cn" target="_blank"><img
+                        src="@/assets/images/Bottom_one.png" alt="南京邮电大学" width="300px" height="70px"></a></span>
             <span class="bottom_img"><a href="http://simp.njupt.edu.cn/" target="_blank"><img
                         src="@/assets/images/Bottom_three.png" alt="南京邮电大学现代邮政学院" width="300px" height="70px"></a></span>
-            <span class="bottom_img"><a href="http://cnxczx.net/" target="_blank"><img
-                        src="@/assets/images/Bottom_forth.png" alt="乡村振兴网" width="300px" height="70px"></a></span>
+
         </div>
     </div>
 </template>

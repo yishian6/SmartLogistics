@@ -106,6 +106,10 @@ const addJObRecList = () => {
             value: jobInfo.value.company_scale
         },
         {
+            key: "公司类型",
+            value: jobInfo.value.company_type
+        },
+        {
             key: "招聘要求",
             value: jobInfo.value.recruit_conditions
         },

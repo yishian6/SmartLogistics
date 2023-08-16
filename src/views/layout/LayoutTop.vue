@@ -14,7 +14,7 @@
 .topbar {
     margin-top: 10px;
     box-sizing: border-box;
-    height: 100px;
+    height: 95px;
     font-size: 22px;
     background-color: #fff;
 }

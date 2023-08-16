@@ -174,6 +174,10 @@ const location = reactive([
   {
     value: '南京·玄武区',
     label: '南京·玄武区'
+  },
+  {
+    value: '其他',
+    label: '其他'
   }
 ])
 const main_business = reactive([
@@ -285,6 +289,7 @@ const getJobCount = () => {
       }
       dataArray.push(obj)
     })
+    console.log(dataArray)
     // 销毁现有的图表实例
     const existingChart = echarts.getInstanceByDom(document.getElementById('myChart'));
     if (existingChart) {
