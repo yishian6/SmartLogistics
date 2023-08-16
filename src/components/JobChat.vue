@@ -98,18 +98,18 @@ document.onkeydown = function () {
     background-color: #f5f5f5;
     box-sizing: border-box;
     background-size: cover;
-    border-radius: 20px;
+    border-radius: 10px;
     /* background-image: url("../5.png"); */
     resize: both;
     overflow: hidden;
     position: fixed;
     left: 10px;
-    top: 27.5%;
+    top: 26%;
 }
 
 .ui_guide .chat .title {
     width: 100%;
-    height: 56px;
+    height: 50px;
     line-height: 56px;
     text-align: center;
     font-size: 18px;
@@ -164,7 +164,7 @@ document.onkeydown = function () {
 
 .ui_guide .chat .text .txt {
     min-height: 40px;
-    font-size: 15px;
+    font-size: 13px;
     line-height: 24px;
     padding: 8px;
     box-sizing: border-box;
@@ -253,7 +253,7 @@ document.onkeydown = function () {
     color: #333;
     box-sizing: border-box;
     background-color: #fff;
-    border-radius: 18px;
+    border-radius: 10px;
     margin-left: 5px;
     margin-top: 1%;
 }
@@ -278,7 +278,7 @@ document.onkeydown = function () {
     color: #3b3a3f;
     background-color: #cccccc;
     border: 0;
-    border-radius: 20px;
+    border-radius: 10px;
     font-weight: bold;
     margin-left: 3px;
 }

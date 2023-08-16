@@ -27,42 +27,49 @@
         </el-col>
       </el-row>
     </div>
-    <div class="job_two">
-      <JobChat />
-      <div v-for="item in jobList" :key="item.id" class="offers">
-        <RouterLink :to="`/job/page/${item.id}`" target="_blank">
-          <div class="first">
-            <span class="job_name">{{ item.job_name }}</span>
-            <span class="date_two">{{ item.publish_date }}</span>
-            <a :href="item.company_address" class="company_name">{{ item.company_name }}</a>
+    <div class="mainbody">
+      <div class="job_two">
+        <JobChat />
+        <div v-for="item in jobList" :key="item.id" class="offers">
+          <RouterLink :to="`/job/page/${item.id}`" target="_blank">
+            <div class="first">
+              <div><span class="job_name">{{ item.job_name }}</span>
+                <span class="date_two">{{ item.publish_date }}</span>
+              </div>
+              <span class="company_name">{{ item.company_name }}</span>
+            </div>
+          </RouterLink>
+          <div class="second">
+            <div><span class="salary">{{ item.salary }}</span>
+              <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
+            </div>
+            <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
           </div>
-        </RouterLink>
-        <div class="second">
-          <span class="salary">{{ item.salary }}</span>
-          <span class="recruit_conditions">{{ item.recruit_conditions }}</span>
-          <span class="company_type">{{ item.company_type }}|{{ item.company_scale }}</span>
+          <div class="second">
+            <span class="benefits">{{ item.benefits }}</span>
+            <span class="main_business">{{ item.main_business }}</span>
+          </div>
         </div>
-        <div class="second">
-          <span class="benefits">{{ item.benefits }}</span>
-          <span class="main_business">{{ item.main_business }}</span>
+      </div>
+      <div class="charts">
+        <div class="monitor-car">
+          <MonitorCar name="岗位数" :number="positionNum" color="rgb(87, 204, 152)" icon="icon-gangweixinxi" />
+          <MonitorCar name="地址数" :number="areaNum" color="rgb(54, 162, 164)" icon="icon-dizhi" />
         </div>
-
-      </div>
-      <div class="block_two">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
-          :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="jobNum">
-        </el-pagination>
-      </div>
-      <div style="width:600px;height:100px;"></div>
-    </div>
-    <div class="charts">
-      <div style="width:600px;height:400px;">
-        <div id="myChart" style="width:100%;height:278px;"></div>
-      </div>
-      <div style="width:600px;height:400px;">
-        <div id="myChart4" style="width:100%;height:250px;float:left;"></div>
+        <div style="width:550px;height:350px;">
+          <div id="myChart" style="width:100%;height:278px;"></div>
+        </div>
+        <div style="width:550px;height:320px;">
+          <div id="myChart4" style="width:100%;height:250px;"></div>
+        </div>
       </div>
     </div>
+    <div class="block_two">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
+        :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="jobNum">
+      </el-pagination>
+    </div>
+    <div style="width:600px;height:50px;"></div>
   </div>
 </template>
 
@@ -74,15 +81,20 @@ import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import JobChat from './JobChat.vue'
 import * as echarts from 'echarts';
+import MonitorCar from '@/views/jobs/MonitorCar.vue'
 // isExplore
 const isExplore = ref(false)
 
-// 岗位数量
+// 表示招聘的岗位数目
 const jobNum = ref(0)
 // pageSize表示页面新闻数
 const pageSize = ref(5)
 const pageNum = ref(1)
 
+// 地址数量
+const areaNum = ref(0)
+// 岗位数量
+const positionNum = ref(0)
 // 搜索条件
 const queryInfo = reactive({
   name: '',
@@ -281,15 +293,16 @@ const getJobCount = () => {
     // console.log(res, "getJobCount")
     const salaryList = res.data.salary_count
     const areaList = res.data.area_count
+    areaNum.value = res.data.area_num,
+      positionNum.value = res.data.position_num
     let dataArray = []
-    Object.keys(salaryList).forEach((item) => {
-      const obj = {
-        value: salaryList[item],
-        name: item
-      }
-      dataArray.push(obj)
+    salaryList.forEach(salary => {
+      dataArray.push({
+        value: salary[1],
+        name: salary[0]
+      })
     })
-    console.log(dataArray)
+    // console.log(dataArray)
     // 销毁现有的图表实例
     const existingChart = echarts.getInstanceByDom(document.getElementById('myChart'));
     if (existingChart) {
@@ -393,7 +406,8 @@ onMounted(() => {
 <style scoped>
 .search {
   /* margin-left: 220px; */
-  margin-top: 50px;
+  margin-left: 10%;
+  margin-top: 30px;
 }
 
 .queryInfo {
@@ -406,6 +420,12 @@ onMounted(() => {
   margin-left: 45%
 }
 
+.mainbody {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
 .offers {
   margin-bottom: 8px;
   /* position: relative; */
@@ -413,9 +433,9 @@ onMounted(() => {
   padding: 16px 32px 16px 38px;
   background-color: #fff;
   transition: all 0.5s;
-  margin-left: 6.8%;
-  margin-top: 50px;
-  width: 700px;
+  margin-left: 6%;
+  margin-top: 40px;
+  width: 650px;
 
 }
 
@@ -438,7 +458,6 @@ onMounted(() => {
 .company_name {
   font-size: 16px;
   color: #0058a6;
-  float: right;
 }
 
 .salary {
@@ -457,7 +476,6 @@ onMounted(() => {
   font-size: 14px;
   color: #666;
   margin-right: 0;
-  float: right;
 }
 
 .benefits {
@@ -476,22 +494,17 @@ onMounted(() => {
 .main_business {
   font-size: 14px;
   color: #999;
-  float: right;
 }
 
-.first {
-  margin-bottom: 10px;
-}
-
+.first,
 .second {
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .block_two {
-  margin-left: 50%;
-  float: left;
-  margin-bottom: 100px;
-  margin-top: 10px;
+  margin-left: 30%;
 }
 
 .el-input {
@@ -509,18 +522,22 @@ onMounted(() => {
 }
 
 .charts {
-  float: right;
-  margin-right: 2.2%;
-  margin-top: 150px;
+  /* margin-right: 2.2%; */
+  margin-top: 50px;
+}
+
+.monitor-car {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 60px;
 }
 
 .job_two {
-  margin-bottom: 100px;
+  margin-bottom: 80px;
   margin-top: 15px;
-  margin-left: 20px;
-  width: 41.25%;
-  height: 400px;
-  float: left;
+  /* margin-left: 20px; */
+  /* width: 41.25%; */
+  /* height: 400px; */
   background-color: white;
   border-radius: 20px;
   user-select: text;
