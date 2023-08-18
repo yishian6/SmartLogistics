@@ -27,9 +27,9 @@
         </el-col>
       </el-row>
     </div>
+    <JobChat />
     <div class="mainbody">
       <div class="job_two">
-        <JobChat />
         <div v-for="item in jobList" :key="item.id" class="offers">
           <RouterLink :to="`/job/page/${item.id}`" target="_blank">
             <div class="first">

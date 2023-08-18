@@ -44,7 +44,7 @@ const router = createRouter({
         },
         {
           path: '/center',
-          component: () => import('@/components/Center.vue'),
+          component: () => import('@/components/ChatTips.vue'),
           meta: { title: "个人中心" }
         },
         // {

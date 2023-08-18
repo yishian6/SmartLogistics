@@ -8,29 +8,34 @@
                 <span>岗位推荐<i class="iconfont icon-xiangxia"></i></span>
                 <span><i class="iconfont icon-suoxiao" @click="changeL"></i></span>
             </div>
-            <ul class="text" ref="msgBox">
-                <li v-for="(messageItem, index) in messageList" :key="index"
-                    :class="[messageItem.type === 'sent' ? 't2' : 't1']">
-                    <img src="@/assets/images/pika2.gif" alt="" v-show="messageItem.type !== 'sent'" />
-                    <div class="txt" v-if="messageItem.content === '请输入您的岗位需求!' || messageItem.type === 'sent'">{{
-                        messageItem.content }}</div>
-                    <div class="txt" v-else>
-                        下面是推荐的岗位，请您参考！
-                        <el-card v-for="item in messageItem.content" :key="item.id">
-                            <RouterLink :to="`/job/page/${item.id}`" target="_blank">
-                                <div>
-                                    <span class="job_name">{{ item.job_name }}</span>
-                                    <span class="salary">{{ item.salary }}</span>
-                                    <span class="location">{{ item.location }}</span>
-                                    <span class="date_two">{{ item.publish_date }}</span>
-                                </div>
-                            </RouterLink>
-                        </el-card>
-                    </div>
-                    <img src="@/assets/images/duola2.jpg" alt="" v-show="messageItem.type === 'sent'" />
-
-                </li>
-            </ul>
+            <div>
+                <ChatTips :sendTipMessage="sendTipMessage" />
+                <ul class="text" v-scrollBottom>
+                    <li v-for="(messageItem, index) in messageList" :key="index"
+                        :class="[messageItem.type === 'sent' ? 't2' : 't1']">
+                        <img src="@/assets/images/pika2.gif" alt="" v-show="messageItem.type !== 'sent'" />
+                        <div class="txt" v-if="messageItem.content === '请输入您的岗位需求!' || messageItem.type === 'sent'">{{
+                            messageItem.content }}</div>
+                        <div class="txt" v-else-if="!messageItem.rec">{{ messageItem.content }}</div>
+                        <div class="txt" v-else>
+                            下面是推荐的岗位，请您参考！
+                            <div v-for="item in messageItem.content" :key="item.id">
+                                <RouterLink :to="`/job/page/${item.id}`" target="_blank">
+                                    <div
+                                        style="display: flex; flex-direction: column; margin-bottom: 10px; background-color: #f8f6f6;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <span class="job_name">{{ item.job_name }}</span>
+                                            <span class="salary">{{ item.salary }}</span>
+                                        </div>
+                                        <span class="company">{{ item.company_name }}</span>
+                                    </div>
+                                </RouterLink>
+                            </div>
+                        </div>
+                        <img src="@/assets/images/duola2.jpg" alt="" v-show="messageItem.type === 'sent'" />
+                    </li>
+                </ul>
+            </div>
             <div class="cont">
                 <input type="text" placeholder="在这里输入文字" class="inp" v-model="message" />
                 <input type="button" value="发送" @click="sendMessage" class="send">
@@ -45,12 +50,13 @@ import { getJobSmartRecAPI } from '@/apis/job';
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
-// 用来控制图标和聊天框的切换
+import ChatTips from './ChatTips.vue';
 const change = ref(false)
 
 // 用来保存输入框输入的信息
 const message = ref('')
-const msgBox = ref('')
+// const msgBox = ref(null)
+
 // 保存每次聊调框的内容
 const messageList = reactive([
     { type: 'received', content: '请输入您的岗位需求!' }
@@ -67,23 +73,60 @@ const sendMessage = () => {
         })
         return;
     }
-
-    const sentMessage = { type: 'sent', content: message.value };
+    const sentMessage = { type: 'sent', content: message.value, rec: false };
     messageList.push(sentMessage);
-    scrollMsgBottom();
 
-    getJobSmartRecAPI(message.value).then(res => {
-        const receivedMessage = { type: 'received', content: res.data };
+    // 根据输入信息返回相应的输出信息
+    if (message.value.includes('你好') || message.value.includes('您好')) {
+        const receivedMessage = { type: 'received', content: '你好，欢迎使用该服务！', rec: false };
         messageList.push(receivedMessage);
-        scrollMsgBottom();
-    }).catch(error => console.log(error))
+        // scrollMsgBottom();
+    }
+    else
+        getJobSmartRecAPI(message.value).then(res => {
+            let receivedMessage;
+            // 当没有查询到需求的时候返回这个信息
+            console.log(res.data)
+            if (res.data === 'null') {
+                receivedMessage = { type: 'received', content: '抱歉没查到相关的岗位，请检查您的查询条件是求否正确!', rec: false };
+            }
+            else {
+                receivedMessage = { type: 'received', content: res.data, rec: true };
+            }
+
+            messageList.push(receivedMessage);
+            // scrollMsgBottom();
+        }).catch(error => console.log(error))
 
     message.value = '';
 }
-const scrollMsgBottom = () => {
-    msgBox.value.scrollTop = msgBox.value.scrollHeight;
+
+// 发送tips提示消息
+const sendTipMessage = (sendVal, receivedVal) => {
+    const sentMessage = { type: 'sent', content: sendVal, rec: false };
+    messageList.push(sentMessage);
+    const receivedMessage = { type: 'received', content: receivedVal, rec: false };
+    messageList.push(receivedMessage);
+    // scrollMsgBottom();
 }
 
+// const scrollMsgBottom = () => {
+//     msgBox.value.scrollTop = -msgBox.value.scrollHeight;
+// }
+
+// function scrollMsgBottom() {
+//     if (msgBox.value) {
+//         const topH = -msgBox.value.offsetHeight;
+//         let cumulativeHeight = 0;
+
+//         msgBox.value.querySelectorAll('li').forEach(li => {
+//             cumulativeHeight += li.offsetHeight;
+//         });
+
+//         msgBox.value.scrollTop = topH + cumulativeHeight;
+//         console.log(msgBox.value)
+//     }
+// }
 document.onkeydown = function () {
     var e = window.event || arguments.callee.caller.arguments[0]   //  arguments.callee.caller.arguments[0]也相当于window.event的值
     e.keyCode === 13 && sendMessage();
@@ -105,6 +148,7 @@ document.onkeydown = function () {
     position: fixed;
     left: 10px;
     top: 26%;
+    user-select: text;
 }
 
 .ui_guide .chat .title {
@@ -210,25 +254,25 @@ document.onkeydown = function () {
 }
 
 .job_name {
-    font-size: 14px;
+    font-size: 12px;
     color: #0058a6;
     margin-right: 3%;
 }
 
-.date_two {
+/* .date_two {
     font-size: 10px;
     color: #999;
 
-}
+} */
 
 .salary {
-    font-size: 12px;
+    font-size: 10px;
     color: #ff6000;
     margin-right: 3%;
 }
 
-.location {
-    font-size: 14px;
+.company {
+    font-size: 12px;
     color: #0058a6;
     margin-right: 3%;
 }
@@ -292,7 +336,7 @@ document.onkeydown = function () {
 }
 
 .icon-jiqiren1 {
-    font-size: 32px;
+    font-size: 34px;
     color: rgb(43, 126, 154);
     position: fixed;
     left: 0px;
