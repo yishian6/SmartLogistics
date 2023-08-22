@@ -114,16 +114,12 @@ const company_type = reactive([
     label: '合资'
   },
   {
-    value: '外资（非欧美)',
-    label: '外资（非欧美)'
-  },
-  {
-    value: '外资（欧美）',
-    label: '外资（欧美）'
-  },
-  {
     value: '国企',
     label: '国企'
+  },
+  {
+    value: '外企',
+    label: '外企'
   },
   {
     value: '已上市',
@@ -132,11 +128,7 @@ const company_type = reactive([
   {
     value: '创业公司',
     label: '创业公司'
-  },
-  {
-    value: '外企代表处',
-    label: '外企代表处'
-  },
+  }
 ])
 const location = reactive([
   {
@@ -405,7 +397,6 @@ onMounted(() => {
 
 <style scoped>
 .search {
-  /* margin-left: 220px; */
   margin-left: 10%;
   margin-top: 30px;
 }

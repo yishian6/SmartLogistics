@@ -1,7 +1,8 @@
 <template>
     <div class="ui_guide">
         <!-- v-show="!change" @click="changeL" 这个是用来实现图标和聊天框的切换的 -->
-        <i class="iconfont icon-jiqiren1" v-show="!change" @click="changeL"></i>
+        <!-- <i class="iconfont icon-jiqiren1" v-show="!change" @click="changeL"></i> -->
+        <img src="@/assets/images/robot.png" alt="机器人" class="icon-jiqiren1" v-show="!change" @click="changeL" />
         <div class="chat" v-show="change">
             <div class="title">
                 <span><i class="iconfont icon-shezhi"></i></span>
@@ -55,16 +56,17 @@ const change = ref(false)
 
 // 用来保存输入框输入的信息
 const message = ref('')
-// const msgBox = ref(null)
 
 // 保存每次聊调框的内容
 const messageList = reactive([
-    { type: 'received', content: '请输入您的岗位需求!' }
+    { type: 'received', content: '欢迎使用该服务，请输入您的岗位需求!' }
 ]);
 
 const changeL = () => {
     change.value = !change.value
 }
+
+// 发送信息时调用的方法
 const sendMessage = () => {
     if (message.value === '') {
         ElMessage({
@@ -78,24 +80,28 @@ const sendMessage = () => {
 
     // 根据输入信息返回相应的输出信息
     if (message.value.includes('你好') || message.value.includes('您好')) {
-        const receivedMessage = { type: 'received', content: '你好，欢迎使用该服务！', rec: false };
+        const receivedMessage = { type: 'received', content: '你好，我是岗位智能推荐服务，欢迎使用该服务！', rec: false };
         messageList.push(receivedMessage);
-        // scrollMsgBottom();
+    }
+    else if (message.value.includes('使用')) {
+        const receivedMessage = { type: 'received', content: '请在聊天框输入你要查询的岗位信息包括岗位名称，薪水，地址，企业类型，例如南京市雨花台区的李先生，希望找到工资8000-10000的电子商务岗位，最好是外企！', rec: false };
+        messageList.push(receivedMessage);
+    }
+    else if (message.value.includes('谢谢')) {
+        const receivedMessage = { type: 'received', content: '不客气，欢迎下次使用！', rec: false };
+        messageList.push(receivedMessage);
     }
     else
         getJobSmartRecAPI(message.value).then(res => {
             let receivedMessage;
             // 当没有查询到需求的时候返回这个信息
-            console.log(res.data)
-            if (res.data === 'null') {
-                receivedMessage = { type: 'received', content: '抱歉没查到相关的岗位，请检查您的查询条件是求否正确!', rec: false };
-            }
-            else {
+            if (Array.isArray(res.data)) {
                 receivedMessage = { type: 'received', content: res.data, rec: true };
             }
-
+            else {
+                receivedMessage = { type: 'received', content: '抱歉没查到相关的岗位，请检查您的查询条件是求否正确!', rec: false };
+            }
             messageList.push(receivedMessage);
-            // scrollMsgBottom();
         }).catch(error => console.log(error))
 
     message.value = '';
@@ -107,26 +113,8 @@ const sendTipMessage = (sendVal, receivedVal) => {
     messageList.push(sentMessage);
     const receivedMessage = { type: 'received', content: receivedVal, rec: false };
     messageList.push(receivedMessage);
-    // scrollMsgBottom();
 }
 
-// const scrollMsgBottom = () => {
-//     msgBox.value.scrollTop = -msgBox.value.scrollHeight;
-// }
-
-// function scrollMsgBottom() {
-//     if (msgBox.value) {
-//         const topH = -msgBox.value.offsetHeight;
-//         let cumulativeHeight = 0;
-
-//         msgBox.value.querySelectorAll('li').forEach(li => {
-//             cumulativeHeight += li.offsetHeight;
-//         });
-
-//         msgBox.value.scrollTop = topH + cumulativeHeight;
-//         console.log(msgBox.value)
-//     }
-// }
 document.onkeydown = function () {
     var e = window.event || arguments.callee.caller.arguments[0]   //  arguments.callee.caller.arguments[0]也相当于window.event的值
     e.keyCode === 13 && sendMessage();
@@ -336,11 +324,13 @@ document.onkeydown = function () {
 }
 
 .icon-jiqiren1 {
-    font-size: 34px;
-    color: rgb(43, 126, 154);
+    /* font-size: 34px; */
+    width: 60px;
+    height: 63px;
+    /* color: rgb(43, 126, 154); */
     position: fixed;
     left: 0px;
-    top: 60%;
+    top: 55%;
 }
 
 .el-card__body {

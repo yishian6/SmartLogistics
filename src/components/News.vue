@@ -32,14 +32,6 @@
                         <router-link :to="`/news/page/${item.row.id}/${newsType}`" target="_blank">{{ item.row.title
                         }}</router-link>
                     </template>
-                    <!-- <div style="float: right; margin-top: 20px; height: 100px" class="popup" @mouseenter="showPopup()"
-                        @mouseleave="hidePopup()">
-                        <transition name="fade">
-                            <div v-if="isPopupVisible" class="popup-content">
-                                {{ item.context }}
-                            </div>
-                        </transition>
-                    </div> -->
                 </el-table-column>
                 <el-table-column prop="publish_date">
                 </el-table-column>

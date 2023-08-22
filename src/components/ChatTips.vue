@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, defineProps } from 'vue'
+import { reactive, ref } from 'vue'
 const tips = reactive([
     { name: '如何使用' },
     { name: '注意事项' },
@@ -39,7 +39,7 @@ const handleRowClick = (row) => {
     else if (row.name === '注意事项')
         receivedVal = '岗位名称请包括市，和区，例如南京市秦淮区，岗位信息至少输入一个，否则无推荐岗位'
     else
-        receivedVal = '请点击联系我们的界面，按照上面的联系方式进行反馈，欢迎您的发聩！'
+        receivedVal = '请点击联系我们的界面，按照上面的联系方式进行反馈，欢迎您的反聩！'
     props.sendTipMessage(row.name, receivedVal)
 }
 </script>
@@ -75,6 +75,6 @@ const handleRowClick = (row) => {
 
 .icon-tishi {
     position: fixed;
-    top: 50%;
+    top: 51%;
 }
 </style>
