@@ -6,9 +6,9 @@
 
 Copyright 2023 by Nanjing University of Posts and Telecommunications.
 
-Time: 15/8/2023 Authors: Jiahao Zhang&Weizhuo Li&Wenjie Xu&Shunzhang Xie
+Time: 15/8/2023 Authors: Jiahao Zhang&Wenjie Xu&Shunzhang Xie&Weizhuo Li
 
-Mail：b21090129@njupt.edu.cn&liweizhuo@amss.ac.cn&b21090519@njupt.edu.cn&b21090229@njupt.edu.cn
+Mail：b21090129@njupt.edu.cn&b21090519@njupt.edu.cn&b21090229@njupt.edu.cn&liweizhuo@amss.ac.cn
 
 Description: zywj is a smart logistics knowledge graph service platform. You can use its original resources and visit the website to enjoy its services.
 

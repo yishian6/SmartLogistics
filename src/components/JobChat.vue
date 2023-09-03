@@ -1,8 +1,7 @@
 <template>
     <div class="ui_guide">
         <!-- v-show="!change" @click="changeL" 这个是用来实现图标和聊天框的切换的 -->
-        <!-- <i class="iconfont icon-jiqiren1" v-show="!change" @click="changeL"></i> -->
-        <img src="@/assets/images/robot.png" alt="机器人" class="icon-jiqiren1" v-show="!change" @click="changeL" />
+        <img src="@/assets/images/robot.png" alt="机器人" class="robot" v-show="!change" @click="changeL" />
         <div class="chat" v-show="change">
             <div class="title">
                 <span><i class="iconfont icon-shezhi"></i></span>
@@ -38,7 +37,7 @@
                 </ul>
             </div>
             <div class="cont">
-                <input type="text" placeholder="在这里输入文字" class="inp" v-model="message" />
+                <input type="text" placeholder="在这里输入文字" class="inp" v-model="message" @keydown.enter="sendMessage" />
                 <input type="button" value="发送" @click="sendMessage" class="send">
             </div>
         </div>
@@ -113,11 +112,6 @@ const sendTipMessage = (sendVal, receivedVal) => {
     messageList.push(sentMessage);
     const receivedMessage = { type: 'received', content: receivedVal, rec: false };
     messageList.push(receivedMessage);
-}
-
-document.onkeydown = function () {
-    var e = window.event || arguments.callee.caller.arguments[0]   //  arguments.callee.caller.arguments[0]也相当于window.event的值
-    e.keyCode === 13 && sendMessage();
 }
 </script>
 
@@ -323,7 +317,7 @@ document.onkeydown = function () {
     font-size: 20px;
 }
 
-.icon-jiqiren1 {
+.robot {
     /* font-size: 34px; */
     width: 60px;
     height: 63px;

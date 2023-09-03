@@ -59,10 +59,10 @@ const items = reactive([
         title: '联系我们',
         index: 'aboutus',
     },
-    {
-        title: '个人中心',
-        index: 'center',
-    }
+    // {
+    //     title: '个人中心',
+    //     index: 'center',
+    // }
 ])
 
 const handleMenuSelect = (index) => {
