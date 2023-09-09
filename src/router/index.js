@@ -6,7 +6,12 @@ const router = createRouter({
     {
       path: '/',
       name: '',
-      redirect: '/index'
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      component: () => import('@/views/login/index.vue'),
+      hidden: true //导航菜单忽略选项
     },
     {
       path: '/',
