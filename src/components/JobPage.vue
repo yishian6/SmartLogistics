@@ -5,7 +5,12 @@
         </div> -->
         <!--推荐列表-->
         <div class="main">
-            <el-row class="center">{{ jobInfo.job_name }}</el-row>
+            <el-row class="center">
+                {{ jobInfo.job_name }}
+                <el-button @click="postJobApplication(jobInfo.id, 1)" class="applition" size="large"
+                    color="rgb(228, 143, 137)" type="primary"><i class="iconfont icon-apply"></i>&nbsp;&nbsp;申请职位
+                </el-button>
+            </el-row>
             <el-row :gutter="20" class="monitor-header">
                 <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="20">
                     <el-row class="monitor-cart-box-two" :gutter="20">
@@ -22,14 +27,17 @@
                             <el-table :data="jobRecTableList" :cell-style="cellStyle" style="width: 100%;">
                                 <el-table-column prop="key" label="" width="300">
                                 </el-table-column>
-                                <el-table-column prop="value" label="" width="550">
+                                <el-table-column prop="" label="" width="550">
+                                    <template v-slot="scope">
+                                        <div v-html="scope.row.value"></div>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </el-row>
                     </el-row>
                 </el-col>
             </el-row>
-
+            <MessageBox ref="messageBoxRef" />
             <el-row :gutter="20" class="monitor-header">
                 <el-col>
                     <el-row class="monitor-cart-box" :gutter="0">
@@ -78,9 +86,10 @@
 </template>
 
 <script setup>
-import { getJobRecommendAPI } from '@/apis/job'
+import { getJobRecommendAPI, postJobApplicationAPI } from '@/apis/job'
 import { useRoute } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
+import MessageBox from '@/views/jobs/MessageBox.vue';
 const route = useRoute()
 // 请求的信息
 const reqInfo = reactive({
@@ -130,6 +139,14 @@ const addJObRecList = () => {
             value: jobInfo.value.location
         },
     )
+    if (jobInfo.value.position_info !== null) {
+        jobRecTableList.push(
+            {
+                key: "岗位要求",
+                value: jobInfo.value.position_info.replace(/\n/g, '<br>')
+            },
+        )
+    }
 }
 
 const cellStyle = ({ row, column }) => {
@@ -155,6 +172,23 @@ const getJobRecommend = () => {
     }).catch(error => console.log(error))
 
 }
+
+const apply_info = ref(0)
+const messageBoxRef = ref(null)
+const postJobApplication = async (job_id, user_id) => {
+    try {
+        const res = await postJobApplicationAPI(job_id, user_id)
+        apply_info.value = res.data
+        if (apply_info.value !== 0) {
+            messageBoxRef.value.dialogVisibleChange(apply_info.value)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 onMounted(() => getJobRecommend())
 </script>
 
@@ -173,11 +207,19 @@ onMounted(() => getJobRecommend())
 }
 
 .center {
-    font-size: 24px;
+    font-size: 26px;
     margin-top: 2%;
     margin-bottom: 2%;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
+    justify-content: space-evenly;
+    margin-left: 200px;
+}
+
+.applition {
+    text-align: center;
+    color: #ffffff;
+    font-size: 18px;
 }
 
 .monitor-header {

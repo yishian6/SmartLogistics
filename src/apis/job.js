@@ -80,3 +80,19 @@ export const getJobSmartRecAPI = (job_require) => {
         params: { job_require }
     })
 }
+
+/**
+ * @description:申请岗位
+ * @param:job_id: 岗位id
+ * @param:job_id: 用户id
+ * @returns 
+ */
+export const postJobApplicationAPI = (job_id, user_id) => {
+    return http({
+        url: '/job/position/apply',
+        method: 'POST',
+        data: {
+            job_id, user_id
+        }
+    })
+}
