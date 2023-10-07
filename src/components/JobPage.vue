@@ -7,8 +7,8 @@
         <div class="main">
             <el-row class="center">
                 {{ jobInfo.job_name }}
-                <el-button @click="postJobApplication(jobInfo.id, 1)" class="applition" size="large"
-                    color="rgb(228, 143, 137)" type="primary"><i class="iconfont icon-apply"></i>&nbsp;&nbsp;申请职位
+                <el-button @click="postJobApplication(jobInfo.id)" class="applition" size="large" color="rgb(228, 143, 137)"
+                    type="primary"><i class="iconfont icon-apply"></i>&nbsp;&nbsp;申请职位
                 </el-button>
             </el-row>
             <el-row :gutter="20" class="monitor-header">
@@ -175,9 +175,9 @@ const getJobRecommend = () => {
 
 const apply_info = ref(0)
 const messageBoxRef = ref(null)
-const postJobApplication = async (job_id, user_id) => {
+const postJobApplication = async (job_id) => {
     try {
-        const res = await postJobApplicationAPI(job_id, user_id)
+        const res = await postJobApplicationAPI(job_id)
         apply_info.value = res.data
         if (apply_info.value !== 0) {
             messageBoxRef.value.dialogVisibleChange(apply_info.value)
